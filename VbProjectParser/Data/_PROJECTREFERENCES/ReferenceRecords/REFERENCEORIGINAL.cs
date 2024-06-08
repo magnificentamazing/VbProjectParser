@@ -7,10 +7,10 @@ using VbProjectParser.Compression;
 
 namespace VbProjectParser.Data._PROJECTREFERENCES.ReferenceRecords
 {
-    // todo
     public class REFERENCEORIGINAL : DataBase
     {
-        [MustBe((UInt16)0x000E)]
+        // todo: rogerg updated Id to match documentation.
+        [MustBe((UInt16)0x0033)]
         public readonly UInt16 Id;
 
         public readonly UInt32 SizeOfLibidOriginal;

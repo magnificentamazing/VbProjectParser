@@ -27,10 +27,14 @@ namespace VbProjectParser.Data._PROJECTREFERENCES.ReferenceRecords
         [LengthMustEqualMember("SizeOfLibidRelative")]
         public readonly Byte[] LibidRelative;
 
-        [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMajor")]
+        // todo: rogerg MajorVersion aren't matching in Word
+        // ignore since don't need
+        // [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMajor")]
         public readonly UInt32 MajorVersion;
 
-        [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMinor")]
+        // todo: rogerg MinorVersion aren't matching in Word. 
+        // ignore since don't need.
+        // [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMinor")]
         public readonly UInt16 MinorVersion;
 
         protected readonly PROJECTINFORMATION ProjectInformation; 

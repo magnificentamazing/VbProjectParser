@@ -64,11 +64,16 @@ namespace VbProjectParser.Data
             var entityBuilder = syntax.Entity<VBAPROJECTText>();
 
             bool canParse = entityBuilder.CanParse(str);
-
             if (!canParse)
             {
                 string pattern = entityBuilder.GetRegexPattern();
-                throw new InvalidOperationException(String.Format("Could not parse ABNF Syntax. Input was: {0}. Mapped regex pattern is: {1}", str, pattern));
+
+                // Todo: rogerg (HostExtenderInfo).
+                //  disabling throwing an exception since don't need for extracting VBA stream.
+                //  With other fixes marked HostExtenderInfo should work but leaving it to 
+                //  just return so don't fail if can't read the ProjectText
+                return;
+                // throw new InvalidOperationException(String.Format("Could not parse ABNF Syntax. Input was: {0}. Mapped regex pattern is: {1}", str, pattern));
             }
 
             var result = entityBuilder.FromAbnfSyntax(str);
@@ -108,7 +113,6 @@ namespace VbProjectParser.Data
             ProjectWindowRecord.Setup(syntax);
             ProjectWorkspace.Setup(syntax);
             VBAPROJECTText.Setup(syntax);
-
             return syntax;
         }
     }

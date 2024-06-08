@@ -20,11 +20,15 @@ namespace VbProjectParser.Data.ABNF
 
         public static void Setup(ISyntax Syntax)
         {
+            // Todo: rogerg (HostExtenderInfo).
+            //   Original code would check for a PreFix of [Host Extender Info]. This causes
+            //   only the first entry to be added since the second entry wouldn't have a Prefix
+            //   of [Host Extender Info].
+            //   Also updated the VBAProjectText.cs to have [Host Extender Info] for the match on HostExtenders.
             Syntax
                 .Entity<HostExtenders>()
                 .EnumerableProperty(x => x.HostExtenderRef)
-                .ByRegisteredTypes(typeof(HostExtenderRef))
-                .WithPrefix(new LiteralToken("[Host Extender Info]") + CommonTokens.NWLN);
+                .ByRegisteredTypes(typeof(HostExtenderRef));
         }
     }
 }

@@ -42,8 +42,21 @@ namespace VbProjectParser.Compression
 
                 // page 57: CompressedChunkData contains an array of TokenSequence elements
 
-                var size = Math.Min(header.CompressedChunkSize, Data.Length - Data.i);
+                // todo: rogerg updated. Calc the size to read as either what is remaining in the buffer or the CompressedChunkSize if that
+                // is less. For the CompressedChunkSize subtract 2 bytes since already read the header.
+
+                if (header.CompressedChunkSize - 2 > (Data.Length - Data.i))
+                {
+                    // since never the case check
+                    // var size = Math.Min(header.CompressedChunkSize -2, Data.Length - Data.i);
+                    // in original code doesn't need the min check
+                    throw new ApplicationException("temp rogerg: why the min check. this shouldn't ever happen");
+                }
+
+                // todo: rogerg size should alwasy just be header.CompressedChunkSize -2
+                var size = header.CompressedChunkSize -2;
                 var tokenSequences = new List<TokenSequence>();
+                int dataLocStart = Data.i;
 
                 int processedBytes = 0;
                 while(processedBytes < size)
@@ -54,7 +67,12 @@ namespace VbProjectParser.Compression
                     processedBytes += tokenSequence.GetSizeInBytes();
                 }
 
-             
+                // todo: rogerg added. Sanity check that the size we ended up reading matches
+                // the size we meant to read.
+                if (size != (Data.i - dataLocStart))
+                {
+                    Console.WriteLine("rogerg. Read past the buffer. Next chunk may be calculated Incorrect.");
+                }
                 //var tokenSequenceBytes = tokenSequence.GetDataInRawBytes();
                 //this.Data = tokenSequenceBytes;
                 //var tokenSequenceSize = tokenSequenceBytes.Count();

@@ -27,6 +27,24 @@ namespace VbProjectParser.Data._PROJECTINFORMATION
         public PROJECTINFORMATION(XlBinaryReader Data)
         {
             this.SysKindRecord = new PROJECTSYSKIND(Data);
+
+            // Todo: Rogerg updated to handle class.
+
+            // Code assumes records are written to the project information in 
+            // same order every time.
+            // Newer versions of Office are puttin a PROJECTCOMPATVERSION record
+            // after the SysKindRecord
+            // Check if the next record is a PROJECTCOMPATVERSION and if so skip.
+
+            int nextRecordType = Data.PeekUInt16();
+            if (nextRecordType == 0x004A)
+            {
+                // read in record but currently don't use
+                UInt16 recordId =  Data.ReadUInt16();
+                UInt32 compatRecordSize = Data.ReadUInt32();
+                UInt32 compatVersion = Data.ReadUInt32();
+            }
+
             this.LcidRecord = new PROJECTLCID(Data);
             this.LcidInvokeRecord = new PROJECTLCIDINVOKE(Data);
             this.CodePageRecord = new PROJECTCODEPAGE(Data);

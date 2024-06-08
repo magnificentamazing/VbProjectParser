@@ -32,6 +32,14 @@ namespace VbProjectParser.OpenXml
         {
         }
 
+        static public VbProject LoadWordDocumentVbProject(string pathToWordDocument)
+        {
+            WordprocessingDocument wordprocessingDocument = LoadWordDocumentFrom(pathToWordDocument);
+            var allParts = wordprocessingDocument.MainDocumentPart.GetPartsOfType<VbaProjectPart>();
+            var vba = allParts.SingleOrDefault();
+            return new VbProject(vba);
+        }
+
         public VbProject(SpreadsheetDocument spreadsheetDocument)
             : this(spreadsheetDocument, false)
         {
@@ -113,6 +121,18 @@ namespace VbProjectParser.OpenXml
 
             SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, true);
             return spreadsheetDocument;
+        }
+
+        private static WordprocessingDocument LoadWordDocumentFrom(string path)
+        {
+            if (path == null)
+                throw new ArgumentNullException("path");
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException(String.Format("File '{0}' not found", path), path);
+
+            WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(path, true);
+            return wordprocessingDocument;
         }
 
         private static VbaProjectPart GetVbaProjectPartFrom(WorkbookPart workbookPart)
