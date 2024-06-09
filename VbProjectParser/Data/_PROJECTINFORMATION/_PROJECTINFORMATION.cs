@@ -29,8 +29,8 @@ namespace VbProjectParser.Data._PROJECTINFORMATION
         {
             this.SysKindRecord = new PROJECTSYSKIND(Data);
 
-            // Excel 2019 Pro includes a new PROJECTCOMPATVERSION Record (section 2.3.4.2.1.2).
-            // Check if project has a PROJECTCOMPATVERSION record.
+            // Excel 2019 includes a new PROJECTCOMPATVERSION Record (section 2.3.4.2.1.2).
+            // Check if the project has a PROJECTCOMPATVERSION record.
             int nextRecordType = Data.PeekUInt16();
             if (nextRecordType == PROJECTCOMPATVERSION.RecordId)
             {
