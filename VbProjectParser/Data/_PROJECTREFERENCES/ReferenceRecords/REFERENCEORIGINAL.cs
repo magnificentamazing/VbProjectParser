@@ -9,7 +9,10 @@ namespace VbProjectParser.Data._PROJECTREFERENCES.ReferenceRecords
 {
     public class REFERENCEORIGINAL : DataBase
     {
+<<<<<<< Updated upstream
         // todo: rogerg updated Id to match documentation.
+=======
+>>>>>>> Stashed changes
         [MustBe((UInt16)0x0033)]
         public readonly UInt16 Id;
 
