@@ -28,17 +28,9 @@ namespace VbProjectParser.Data._PROJECTREFERENCES
             }
             else if (peek == 0x0033)
             {
-<<<<<<< Updated upstream
-                // todo: rogerg. should formalize this if keep.
-                // todo: Test this, documentation says 0x0033 is REFERENCECONTROL too but this seems odd
-                this.ReferenceRecord = new REFERENCEORIGINAL(Data);
-
-                // reference original is followed by a reference record
-=======
                 this.ReferenceOriginalRecord = new REFERENCEORIGINAL(Data);
 
-                // reference original is followed immediately by a reference record
->>>>>>> Stashed changes
+                // A reference original is followed immediately by a reference record.
                 this.ReferenceRecord = new REFERENCECONTROL(ProjectInformation, Data);
             }
             else if (peek == 0x000D)
