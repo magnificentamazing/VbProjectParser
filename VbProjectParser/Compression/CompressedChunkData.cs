@@ -21,7 +21,7 @@ namespace VbProjectParser.Compression
         {
             this.header = header;
 
-            if(header.CompressedChunkFlag == (Byte)0x00)
+            if (header.CompressedChunkFlag == (Byte)0x00)
             {
                 // page 57: CompressedChunkData contains an array of CompressedChunkHeader.CompressedChunkSize
                 // elements plus 3 bytes of uncompressed data
@@ -33,33 +33,22 @@ namespace VbProjectParser.Compression
                 //Array.Copy(Data, ArrayIndex, this.Data, 0, CopySize);
                 //ArrayIndex += header.CompressedChunkSize;
 
-                this.Decompress = (buffer, state) => DecompressRawChunk(buffer,state,this.Data);
+                this.Decompress = (buffer, state) => DecompressRawChunk(buffer, state, this.Data);
 
 
-            } else if(header.CompressedChunkFlag == (Byte)0x01)
+            }
+            else if (header.CompressedChunkFlag == (Byte)0x01)
             {
                 // TODO: DO something like when compressedcurrent < compressedend -> add a new tokensequence
 
                 // page 57: CompressedChunkData contains an array of TokenSequence elements
-
-                // todo: rogerg updated. Calc the size to read as either what is remaining in the buffer or the CompressedChunkSize if that
-                // is less. For the CompressedChunkSize subtract 2 bytes since already read the header.
-
-                if (header.CompressedChunkSize - 2 > (Data.Length - Data.i))
-                {
-                    // since never the case check
-                    // var size = Math.Min(header.CompressedChunkSize -2, Data.Length - Data.i);
-                    // in original code doesn't need the min check
-                    throw new ApplicationException("temp rogerg: why the min check. this shouldn't ever happen");
-                }
-
-                // todo: rogerg size should alwasy just be header.CompressedChunkSize -2
-                var size = header.CompressedChunkSize -2;
+                // Subtract 2 from the header.CompressedChunkSize since we've already read 
+                // two bytes from the CompressedChunk data when read the header.
+                var size = Math.Min(header.CompressedChunkSize - 2, Data.Length - Data.i);
                 var tokenSequences = new List<TokenSequence>();
-                int dataLocStart = Data.i;
 
                 int processedBytes = 0;
-                while(processedBytes < size)
+                while (processedBytes < size)
                 {
                     int remainingBytes = size - processedBytes;
                     var tokenSequence = new TokenSequence(Data, remainingBytes);
@@ -67,19 +56,14 @@ namespace VbProjectParser.Compression
                     processedBytes += tokenSequence.GetSizeInBytes();
                 }
 
-                // todo: rogerg added. Sanity check that the size we ended up reading matches
-                // the size we meant to read.
-                if (size != (Data.i - dataLocStart))
-                {
-                    Console.WriteLine("rogerg. Read past the buffer. Next chunk may be calculated Incorrect.");
-                }
+
                 //var tokenSequenceBytes = tokenSequence.GetDataInRawBytes();
                 //this.Data = tokenSequenceBytes;
                 //var tokenSequenceSize = tokenSequenceBytes.Count();
 
                 //if(tokenSequenceSize != header.CompressedChunkSize+3)
                 //{
-                    //throw new InvalidOperationException(String.Format("CompressedChunkData Data-array size expected {0}, but was {1}", header.CompressedChunkSize+3, tokenSequenceSize));
+                //throw new InvalidOperationException(String.Format("CompressedChunkData Data-array size expected {0}, but was {1}", header.CompressedChunkSize+3, tokenSequenceSize));
                 //}
 
                 this.Decompress = (buffer, state) => DecompressTokenSequence(buffer, state, tokenSequences);
@@ -99,7 +83,7 @@ namespace VbProjectParser.Compression
 
             Byte[] append = new Byte[4096];
             //Array.Copy(state.OriginalData, state.CompressedCurrent, append, 0, header.CompressedChunkSize);
-            
+
             //int nCopy = Math.Min(4096, state.OriginalData.Length-state.CompressedCurrent);
             //Array.Copy(state.OriginalData, state.CompressedCurrent, append, 0, nCopy);
             Array.Copy(this.Data, 0, append, 0, 4096); // todo: maybe copy from original data?
@@ -117,25 +101,25 @@ namespace VbProjectParser.Compression
                 t.Decompress(buffer, state);
             }
         }
-/*
-        public void Decompress(IList<Byte> ToTarget)
-        {
-            if (header.CompressionChunkFlag == (Byte)0x01)
-            {
-                Console.WriteLine("Using TokenSequence Decompression");
-                DecompressTokenSequence(ToTarget);
-            }
-            else
-            {
-                Console.WriteLine("Using RawChunkg Decompression");
-                throw new NotImplementedException();
-            }
-        }
+        /*
+                public void Decompress(IList<Byte> ToTarget)
+                {
+                    if (header.CompressionChunkFlag == (Byte)0x01)
+                    {
+                        Console.WriteLine("Using TokenSequence Decompression");
+                        DecompressTokenSequence(ToTarget);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Using RawChunkg Decompression");
+                        throw new NotImplementedException();
+                    }
+                }
 
-        protected void DecompressTokenSequence(IList<Byte> ToTarget)
-        {
-            _TokenSequence = new TokenSequence(this.Data);
-            _TokenSequence.Decompress(ToTarget);
-        }*/
+                protected void DecompressTokenSequence(IList<Byte> ToTarget)
+                {
+                    _TokenSequence = new TokenSequence(this.Data);
+                    _TokenSequence.Decompress(ToTarget);
+                }*/
     }
 }
