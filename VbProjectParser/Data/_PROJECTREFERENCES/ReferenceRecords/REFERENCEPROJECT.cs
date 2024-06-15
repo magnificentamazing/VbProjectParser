@@ -27,14 +27,15 @@ namespace VbProjectParser.Data._PROJECTREFERENCES.ReferenceRecords
         [LengthMustEqualMember("SizeOfLibidRelative")]
         public readonly Byte[] LibidRelative;
 
+        // https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/08280eb0-d628-495c-867f-5985ed020142
         // todo: rogerg MajorVersion aren't matching in Word
         // ignore since don't need
-        // [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMajor")]
+        //[ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMajor")]
         public readonly UInt32 MajorVersion;
 
         // todo: rogerg MinorVersion aren't matching in Word. 
         // ignore since don't need.
-        // [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMinor")]
+      //  [ValueMustEqualMember("ProjectInformation.VersionRecord.VersionMinor")]
         public readonly UInt16 MinorVersion;
 
         protected readonly PROJECTINFORMATION ProjectInformation; 
