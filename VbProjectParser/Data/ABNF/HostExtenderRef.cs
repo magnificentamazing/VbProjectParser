@@ -51,12 +51,10 @@ namespace VbProjectParser.Data.ABNF
                 .ByRegexPattern(CommonRegexPatterns._GUID)
                 .WithPostfix(new LiteralToken(";"));
 
-            // Todo: rogerg (HostExtenderInfo). Would only match VBA so would fail if libName 
-            // is something like EXCEL8.0. Considering everything until next ; as the LibName.
             Syntax
                 .Entity<HostExtenderRef>()
                 .Property(x => x.LibName)
-                .ByRegexPattern(".*")
+                .ByRegexPattern("VBE|[\x21-\x3A\x3C-\xFF]*")
                 .WithPostfix(new LiteralToken(";"));
 
             Syntax
