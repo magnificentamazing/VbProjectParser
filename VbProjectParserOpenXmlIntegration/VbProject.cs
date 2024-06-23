@@ -14,7 +14,7 @@ namespace VbProjectParser.OpenXml
     public class VbProject : IDisposable
     {
         private VbaStorage m_Storage;
-        private IDisposable m_spreadsheetDisposable;
+        private IDisposable m_xmlPackageDisposable;
 
         private readonly Lazy<IEnumerable<VbModule>> m_Modules;
         public IEnumerable<VbModule> Modules
@@ -32,6 +32,7 @@ namespace VbProjectParser.OpenXml
         {
         }
 
+#if gone
         static public VbProject LoadWordDocumentVbProject(string pathToWordDocument)
         {
             WordprocessingDocument wordprocessingDocument = LoadWordDocumentFrom(pathToWordDocument);
@@ -39,17 +40,34 @@ namespace VbProjectParser.OpenXml
             var vba = allParts.SingleOrDefault();
             return new VbProject(vba);
         }
+#endif
 
         public VbProject(SpreadsheetDocument spreadsheetDocument)
             : this(spreadsheetDocument, false)
         {
         }
 
-        private VbProject(SpreadsheetDocument spreadsheetDocument, bool DisposeSpreadsheetDocument)
-            : this(spreadsheetDocument.WorkbookPart)
+
+#if gone//todo: confirm was never putlic.
+        public VbProject(WordprocessingDocument wordprocessingDocument)
+            : this(wordprocessingDocument, wordprocessingDocument.MainDocumentPart.GetPartsOfType<VbaProjectPart>().SingleOrDefault(), false)
         {
-            if (DisposeSpreadsheetDocument)
-                this.m_spreadsheetDisposable = spreadsheetDocument;
+        }
+#endif
+
+        public VbProject(OpenXmlPackage xmlPackage, VbaProjectPart vbaProjectPart, bool disposeXmlPackage)
+            : this(vbaProjectPart)
+        {
+            if (disposeXmlPackage)
+            {
+                m_xmlPackageDisposable = xmlPackage;
+            }
+        }
+
+ 
+        private VbProject(SpreadsheetDocument spreadsheetDocument, bool DisposeSpreadsheetDocument)
+            : this(spreadsheetDocument, GetVbaProjectPartFrom(spreadsheetDocument.WorkbookPart), DisposeSpreadsheetDocument)
+        {
         }
 
         public VbProject(WorkbookPart workbookPart)
@@ -80,10 +98,10 @@ namespace VbProjectParser.OpenXml
 
         public void Dispose()
         {
-            if (m_spreadsheetDisposable != null)
+            if (m_xmlPackageDisposable != null)
             {
-                m_spreadsheetDisposable.Dispose();
-                m_spreadsheetDisposable = null;
+                m_xmlPackageDisposable.Dispose();
+                m_xmlPackageDisposable = null;
             }
 
             if (m_Storage != null)
@@ -111,6 +129,7 @@ namespace VbProjectParser.OpenXml
             }
         }
 
+        // TODO: ROGERG. REVIEW IF ALREADY HERE AND IF SO MAYBE RE-USE.
         private static SpreadsheetDocument LoadSpreadsheetDocumentFrom(string path)
         {
             if (path == null)
@@ -123,6 +142,7 @@ namespace VbProjectParser.OpenXml
             return spreadsheetDocument;
         }
 
+#if gone
         private static WordprocessingDocument LoadWordDocumentFrom(string path)
         {
             if (path == null)
@@ -134,6 +154,8 @@ namespace VbProjectParser.OpenXml
             WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(path, true);
             return wordprocessingDocument;
         }
+
+#endif
 
         private static VbaProjectPart GetVbaProjectPartFrom(WorkbookPart workbookPart)
         {
