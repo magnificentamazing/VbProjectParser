@@ -28,7 +28,6 @@ namespace VbProjectParser.Data.ABNF
         /// Specifies a host-provided Automation type library name. "VBE" specifies a built in name for the VBA Automation type library.
         /// </summary>
         public string LibName { get; set; }
-        public string LibName2 { get; set; }
 
         /// <summary>
         /// Specifies a host-provided flag as follows:
