@@ -32,39 +32,11 @@ namespace VbProjectParser.OpenXml
         {
         }
 
-#if gone
-        static public VbProject LoadWordDocumentVbProject(string pathToWordDocument)
-        {
-            WordprocessingDocument wordprocessingDocument = LoadWordDocumentFrom(pathToWordDocument);
-            var allParts = wordprocessingDocument.MainDocumentPart.GetPartsOfType<VbaProjectPart>();
-            var vba = allParts.SingleOrDefault();
-            return new VbProject(vba);
-        }
-#endif
-
         public VbProject(SpreadsheetDocument spreadsheetDocument)
             : this(spreadsheetDocument, false)
         {
         }
 
-
-#if gone//todo: confirm was never putlic.
-        public VbProject(WordprocessingDocument wordprocessingDocument)
-            : this(wordprocessingDocument, wordprocessingDocument.MainDocumentPart.GetPartsOfType<VbaProjectPart>().SingleOrDefault(), false)
-        {
-        }
-#endif
-
-        public VbProject(OpenXmlPackage xmlPackage, VbaProjectPart vbaProjectPart, bool disposeXmlPackage)
-            : this(vbaProjectPart)
-        {
-            if (disposeXmlPackage)
-            {
-                m_xmlPackageDisposable = xmlPackage;
-            }
-        }
-
- 
         private VbProject(SpreadsheetDocument spreadsheetDocument, bool DisposeSpreadsheetDocument)
             : this(spreadsheetDocument, GetVbaProjectPartFrom(spreadsheetDocument.WorkbookPart), DisposeSpreadsheetDocument)
         {
@@ -73,6 +45,15 @@ namespace VbProjectParser.OpenXml
         public VbProject(WorkbookPart workbookPart)
             : this(GetVbaProjectPartFrom(workbookPart))
         {
+        }
+
+        public VbProject(OpenXmlPackage xmlPackage, VbaProjectPart vbaProjectPart, bool disposeXmlPackage)
+            : this(vbaProjectPart)
+        {
+            if (disposeXmlPackage)
+            {
+                m_xmlPackageDisposable = xmlPackage;
+            }
         }
 
         public VbProject(VbaProjectPart vbaProjectPart)
@@ -129,7 +110,6 @@ namespace VbProjectParser.OpenXml
             }
         }
 
-        // TODO: ROGERG. REVIEW IF ALREADY HERE AND IF SO MAYBE RE-USE.
         private static SpreadsheetDocument LoadSpreadsheetDocumentFrom(string path)
         {
             if (path == null)
@@ -141,21 +121,6 @@ namespace VbProjectParser.OpenXml
             SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(path, true);
             return spreadsheetDocument;
         }
-
-#if gone
-        private static WordprocessingDocument LoadWordDocumentFrom(string path)
-        {
-            if (path == null)
-                throw new ArgumentNullException("path");
-
-            if (!File.Exists(path))
-                throw new FileNotFoundException(String.Format("File '{0}' not found", path), path);
-
-            WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(path, true);
-            return wordprocessingDocument;
-        }
-
-#endif
 
         private static VbaProjectPart GetVbaProjectPartFrom(WorkbookPart workbookPart)
         {
