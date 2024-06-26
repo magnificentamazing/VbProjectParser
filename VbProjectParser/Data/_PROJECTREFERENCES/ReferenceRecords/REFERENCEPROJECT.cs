@@ -29,8 +29,6 @@ namespace VbProjectParser.Data._PROJECTREFERENCES.ReferenceRecords
 
         public readonly UInt32 MajorVersion;
 
-        public readonly UInt32 MajorVersion;
-
         public readonly UInt16 MinorVersion;
 
         protected readonly PROJECTINFORMATION ProjectInformation; 
